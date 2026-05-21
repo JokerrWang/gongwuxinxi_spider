@@ -10,7 +10,9 @@
 ├─ src/                 # Node.js 后端服务
 ├─ scripts/             # 本地辅助运行脚本
 ├─ tests/               # Node 测试
+├─ deploy/              # 部署示例配置
 ├─ logs/                # 本地运行日志，已忽略
+├─ Dockerfile
 ├─ package.json
 └─ README.md
 ```
@@ -22,7 +24,7 @@
 
 服务端会抓取官方公开页面，解析公告标题、日期、来源和原文链接。服务启动时会自动抓取一次，之后每隔 1 小时自动刷新一次。
 
-## 运行
+## 本地运行
 
 推荐安装 Node.js 18+ 后运行：
 
@@ -30,7 +32,7 @@
 npm start
 ```
 
-当前机器如果暂时没有 Node.js，也可以用 PowerShell 版本地服务：
+当前 Windows 机器如果暂时没有 Node.js，也可以用 PowerShell 版本地服务：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-local.ps1
@@ -41,6 +43,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-local.ps1
 ```text
 http://localhost:3000
 ```
+
+## 部署
+
+部署到服务器请看：
+
+```text
+deploy/README.md
+```
+
+推荐方式：
+
+- 有 Docker：用 `Dockerfile` 构建并运行。
+- 普通 Linux 服务器：用 Node.js + `deploy/gongwuxinxi-spider.service` 托管进程。
+- 有域名：用 Nginx 反向代理到 `127.0.0.1:3000`。
 
 ## 接口
 

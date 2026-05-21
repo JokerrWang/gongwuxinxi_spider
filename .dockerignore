@@ -1,0 +1,8 @@
+.git
+logs
+node_modules
+*.log
+Dockerfile
+deploy
+tests
+scripts
