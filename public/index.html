@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f6f7f2">
+    <title>天津考编雷达</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="top-panel">
+        <div>
+          <p class="eyebrow">天津 · 公务员 / 事业单位</p>
+          <h1>考试信息雷达</h1>
+          <p class="subline" id="updatedText">正在连接官方信息源</p>
+        </div>
+        <button class="icon-button" id="refreshButton" aria-label="刷新">
+          <span aria-hidden="true">↻</span>
+        </button>
+      </section>
+
+      <section class="search-panel">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="搜索单位、公告、面试、报名">
+        </label>
+        <div class="tabs" role="tablist" aria-label="考试类型">
+          <button class="tab active" data-filter="全部" type="button">全部</button>
+          <button class="tab" data-filter="公务员" type="button">公务员</button>
+          <button class="tab" data-filter="事业单位" type="button">事业单位</button>
+          <button class="tab" data-filter="选调/遴选" type="button">选调</button>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="数据概览">
+        <div>
+          <strong id="totalCount">--</strong>
+          <span>条公告</span>
+        </div>
+        <div>
+          <strong id="newCount">--</strong>
+          <span>近期更新</span>
+        </div>
+        <div>
+          <strong id="sourceCount">--</strong>
+          <span>个来源</span>
+        </div>
+      </section>
+
+      <section class="notice-area">
+        <div class="section-title">
+          <h2>最新动态</h2>
+          <span id="resultCount"></span>
+        </div>
+        <div class="notice-list" id="noticeList">
+          <article class="skeleton"></article>
+          <article class="skeleton"></article>
+          <article class="skeleton"></article>
+        </div>
+      </section>
+
+      <section class="source-panel">
+        <h2>官方来源</h2>
+        <div id="sourceList"></div>
+      </section>
+    </main>
+
+    <template id="noticeTemplate">
+      <article class="notice-card">
+        <div class="notice-head">
+          <span class="pill"></span>
+          <span class="date"></span>
+        </div>
+        <h3></h3>
+        <div class="meta-row">
+          <span class="status"></span>
+          <span class="source"></span>
+        </div>
+        <a class="open-link" target="_blank" rel="noopener">查看原文</a>
+      </article>
+    </template>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

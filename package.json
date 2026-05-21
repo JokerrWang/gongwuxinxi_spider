@@ -1,0 +1,15 @@
+{
+  "name": "tianjin-exam-radar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile web page for tracking Tianjin civil service and public institution exam notices.",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "start:ps": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-local.ps1",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
