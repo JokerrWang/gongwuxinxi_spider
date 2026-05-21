@@ -11,9 +11,6 @@ const elements = {
   refreshButton: document.querySelector("#refreshButton"),
   searchInput: document.querySelector("#searchInput"),
   tabs: [...document.querySelectorAll(".tab")],
-  totalCount: document.querySelector("#totalCount"),
-  newCount: document.querySelector("#newCount"),
-  sourceCount: document.querySelector("#sourceCount"),
   resultCount: document.querySelector("#resultCount"),
   noticeList: document.querySelector("#noticeList"),
   sourceList: document.querySelector("#sourceList"),
@@ -34,11 +31,11 @@ async function loadExams(force = false) {
     renderNotices();
 
     if (payload.errors?.length) {
-      elements.updatedText.textContent = `部分来源暂不可用，已显示 ${state.exams.length} 条可用信息`;
+      elements.updatedText.textContent = `最近一次更新时间为：部分来源暂不可用，已显示 ${state.exams.length} 条可用信息`;
     }
   } catch (error) {
     elements.noticeList.replaceChildren(createMessage("error-state", `拉取失败：${error.message}。请稍后刷新，或直接打开下方官方来源查看。`));
-    elements.updatedText.textContent = "连接失败";
+    elements.updatedText.textContent = "最近一次更新时间为：连接失败";
   } finally {
     setLoading(false);
   }
@@ -47,12 +44,8 @@ async function loadExams(force = false) {
 function updateSummary(payload) {
   const updatedAt = payload.updatedAt ? new Date(payload.updatedAt) : null;
   elements.updatedText.textContent = updatedAt
-    ? `更新于 ${formatDateTime(updatedAt)}${payload.cached ? " · 缓存" : ""}`
-    : "已加载";
-
-  elements.totalCount.textContent = state.exams.length;
-  elements.newCount.textContent = state.exams.filter((item) => item.status === "最新" || item.status === "近期").length;
-  elements.sourceCount.textContent = state.sources.length;
+    ? `最近一次更新时间为：${formatDateTime(updatedAt)}${payload.cached ? " · 缓存" : ""}`
+    : "最近一次更新时间为：已加载";
 }
 
 function renderNotices() {

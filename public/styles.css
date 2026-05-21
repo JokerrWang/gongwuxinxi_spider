@@ -137,35 +137,6 @@ h1 {
   background: var(--green);
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.summary-grid div {
-  min-height: 76px;
-  padding: 14px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--card);
-  box-shadow: var(--shadow);
-}
-
-.summary-grid strong {
-  display: block;
-  font-size: 24px;
-  line-height: 1;
-}
-
-.summary-grid span {
-  display: block;
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .notice-area {
   margin-top: 22px;
 }
