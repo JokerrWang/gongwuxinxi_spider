@@ -20,29 +20,21 @@
         </button>
       </section>
 
-      <section class="search-panel">
-        <label class="search-box">
-          <span aria-hidden="true">⌕</span>
-          <input id="searchInput" type="search" placeholder="搜索单位、公告、面试、报名">
-        </label>
-        <div class="tabs" role="tablist" aria-label="考试类型">
-          <button class="tab active" data-filter="全部" type="button">全部</button>
-          <button class="tab" data-filter="公务员" type="button">公务员</button>
-          <button class="tab" data-filter="事业单位" type="button">事业单位</button>
-          <button class="tab" data-filter="选调/遴选" type="button">选调</button>
-        </div>
-      </section>
-
       <section class="notice-area">
         <div class="section-title">
           <h2>最新动态</h2>
           <span id="resultCount"></span>
+        </div>
+        <div class="info-tabs" role="tablist" aria-label="信息类型">
+          <button class="info-tab active" data-tab="civil" type="button">公务员信息</button>
+          <button class="info-tab" data-tab="enterprise" type="button">国企信息</button>
         </div>
         <div class="notice-list" id="noticeList">
           <article class="skeleton"></article>
           <article class="skeleton"></article>
           <article class="skeleton"></article>
         </div>
+        <div class="pagination" id="pagination" aria-label="最新动态分页"></div>
       </section>
 
       <section class="source-panel">

@@ -67,7 +67,8 @@ h1 {
 .subline {
   margin-top: 10px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 18px;
+  line-height: 1.35;
 }
 
 .icon-button {
@@ -85,7 +86,6 @@ h1 {
   animation: spin 0.9s linear infinite;
 }
 
-.search-panel,
 .source-panel {
   margin-top: 12px;
   padding: 12px;
@@ -94,44 +94,25 @@ h1 {
   background: rgba(255, 255, 255, 0.76);
 }
 
-.search-box {
+.info-tabs {
   display: grid;
-  grid-template-columns: 24px 1fr;
-  align-items: center;
-  height: 46px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--card);
-  color: var(--muted);
-}
-
-.search-box input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  color: var(--ink);
-  background: transparent;
-}
-
-.tabs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  margin-top: 10px;
+  margin-bottom: 12px;
 }
 
-.tab {
+.info-tab {
   min-width: 0;
-  height: 38px;
+  height: 40px;
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--muted);
   background: var(--card);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
-.tab.active {
+.info-tab.active {
   border-color: var(--green);
   color: #ffffff;
   background: var(--green);
@@ -161,6 +142,63 @@ h1 {
 .notice-list {
   display: grid;
   gap: 12px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-top: 14px;
+}
+
+.page-button {
+  min-width: 88px;
+  height: 40px;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  color: var(--green);
+  background: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.14s ease,
+    color 0.14s ease,
+    background-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.page-button:not(:disabled):hover {
+  background: rgba(31, 122, 88, 0.08);
+  box-shadow: 0 8px 18px rgba(31, 122, 88, 0.12);
+}
+
+.page-button:not(:disabled):active {
+  color: #ffffff;
+  background: var(--green);
+  box-shadow: 0 4px 10px rgba(31, 122, 88, 0.18);
+  transform: translateY(1px) scale(0.97);
+}
+
+.page-button:focus-visible {
+  outline: 3px solid rgba(31, 122, 88, 0.22);
+  outline-offset: 2px;
+}
+
+.page-button:disabled {
+  border-color: var(--line);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.48);
+  cursor: default;
+}
+
+.page-status {
+  min-width: 58px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .notice-card,
@@ -308,7 +346,11 @@ h1 {
     font-size: 30px;
   }
 
-  .tab {
-    font-size: 12px;
+  .subline {
+    font-size: 16px;
+  }
+
+  .info-tab {
+    font-size: 13px;
   }
 }

@@ -1,18 +1,20 @@
 const state = {
   exams: [],
   sources: [],
-  filter: "全部",
-  keyword: "",
+  activeTab: "civil",
+  page: 1,
   loading: false
 };
+
+const PAGE_SIZE = 10;
 
 const elements = {
   updatedText: document.querySelector("#updatedText"),
   refreshButton: document.querySelector("#refreshButton"),
-  searchInput: document.querySelector("#searchInput"),
-  tabs: [...document.querySelectorAll(".tab")],
+  infoTabs: [...document.querySelectorAll(".info-tab")],
   resultCount: document.querySelector("#resultCount"),
   noticeList: document.querySelector("#noticeList"),
+  pagination: document.querySelector("#pagination"),
   sourceList: document.querySelector("#sourceList"),
   template: document.querySelector("#noticeTemplate")
 };
@@ -26,6 +28,7 @@ async function loadExams(force = false) {
 
     state.exams = payload.exams || [];
     state.sources = payload.sources || [];
+    state.page = 1;
     updateSummary(payload);
     renderSources();
     renderNotices();
@@ -49,23 +52,29 @@ function updateSummary(payload) {
 }
 
 function renderNotices() {
-  const keyword = state.keyword.trim().toLowerCase();
   const filtered = state.exams.filter((item) => {
-    const typeMatched = state.filter === "全部" || item.category === state.filter;
-    const text = `${item.title} ${item.source} ${item.highlight}`.toLowerCase();
-    return typeMatched && (!keyword || text.includes(keyword));
+    if (state.activeTab === "enterprise") return item.category === "国企";
+    return item.category !== "国企";
   });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  state.page = Math.min(state.page, totalPages);
+  const start = (state.page - 1) * PAGE_SIZE;
+  const pageItems = filtered.slice(start, start + PAGE_SIZE);
 
   elements.resultCount.textContent = `${filtered.length} 条`;
   elements.noticeList.innerHTML = "";
+  elements.pagination.innerHTML = "";
 
   if (!filtered.length) {
-    elements.noticeList.replaceChildren(createMessage("empty-state", "没有匹配结果。可以换个关键词，或切回“全部”。"));
+    const message = state.activeTab === "enterprise"
+      ? "国企信息查询能力即将增加，当前暂无动态。"
+      : "暂无最新动态。";
+    elements.noticeList.replaceChildren(createMessage("empty-state", message));
     return;
   }
 
   const fragment = document.createDocumentFragment();
-  filtered.forEach((item) => {
+  pageItems.forEach((item) => {
     const node = elements.template.content.cloneNode(true);
     const pill = node.querySelector(".pill");
     pill.textContent = item.category;
@@ -80,6 +89,33 @@ function renderNotices() {
   });
 
   elements.noticeList.appendChild(fragment);
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+  if (totalPages <= 1) return;
+
+  const previous = createPageButton("上一页", state.page - 1, state.page === 1);
+  const next = createPageButton("下一页", state.page + 1, state.page === totalPages);
+  const label = document.createElement("span");
+  label.className = "page-status";
+  label.textContent = `${state.page} / ${totalPages}`;
+
+  elements.pagination.append(previous, label, next);
+}
+
+function createPageButton(label, page, disabled) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "page-button";
+  button.textContent = label;
+  button.disabled = disabled;
+  button.addEventListener("click", () => {
+    state.page = page;
+    renderNotices();
+    document.querySelector(".notice-area").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  return button;
 }
 
 function renderSources() {
@@ -133,16 +169,12 @@ function createMessage(className, message) {
 
 elements.refreshButton.addEventListener("click", () => loadExams(true));
 
-elements.searchInput.addEventListener("input", (event) => {
-  state.keyword = event.target.value;
-  renderNotices();
-});
-
-elements.tabs.forEach((button) => {
+elements.infoTabs.forEach((button) => {
   button.addEventListener("click", () => {
-    elements.tabs.forEach((item) => item.classList.remove("active"));
+    elements.infoTabs.forEach((item) => item.classList.remove("active"));
     button.classList.add("active");
-    state.filter = button.dataset.filter;
+    state.activeTab = button.dataset.tab;
+    state.page = 1;
     renderNotices();
   });
 });
