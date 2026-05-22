@@ -1,5 +1,5 @@
 [Unit]
-Description=Tianjin Exam Radar
+Description=天津公职/国企招聘信息汇总
 After=network.target
 
 [Service]

@@ -1,6 +1,6 @@
-# Deployment Guide
+# 天津公职/国企招聘信息汇总部署指南
 
-这个项目生产环境推荐用 Node.js 运行，前面再接 Nginx 做域名和 HTTPS。
+天津公职/国企招聘信息汇总生产环境推荐用 Node.js 运行，前面再接 Nginx 做域名和 HTTPS。
 
 ## 方式一：Docker
 
