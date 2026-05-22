@@ -3,119 +3,58 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#eef2ee">
+    <meta name="theme-color" content="#f6f7f2">
     <title>天津公职/国企招聘信息汇总</title>
-    <link rel="stylesheet" href="/styles.css?v=mobile-compact-5">
+    <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <div class="page-texture" aria-hidden="true"></div>
-
     <main class="app-shell">
-      <header class="command-header" aria-labelledby="pageTitle">
-        <div class="title-group">
-          <div class="title-copy">
-            <p class="eyebrow">天津 · 公职 / 国企招聘</p>
-            <h1 id="pageTitle">天津公职/国企招聘信息汇总</h1>
-          </div>
+      <section class="top-panel">
+        <div>
+          <p class="eyebrow">天津 · 公职 / 国企招聘</p>
+          <h1>天津公职/国企招聘信息汇总</h1>
+          <p class="subline" id="updatedText">最近一次更新时间为：正在连接官方信息源</p>
         </div>
-
-        <button class="icon-button" id="refreshButton" type="button" aria-label="刷新公告">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M20 11a8 8 0 0 0-14.7-4.4L4 8"></path>
-            <path d="M4 4v4h4"></path>
-            <path d="M4 13a8 8 0 0 0 14.7 4.4L20 16"></path>
-            <path d="M20 20v-4h-4"></path>
-          </svg>
+        <button class="icon-button" id="refreshButton" aria-label="刷新">
+          <span aria-hidden="true">↻</span>
         </button>
-
-        <div class="status-line" aria-label="抓取状态">
-          <span id="updatedText">更新中</span>
-          <span class="meta-divider" aria-hidden="true">·</span>
-          <span id="syncStatus">正在同步官方公告</span>
-        </div>
-      </header>
-
-      <section class="metric-strip" aria-label="信息概览">
-        <div class="stat-card stat-card-total">
-          <span>公告总量</span>
-          <strong id="totalCount">--</strong>
-        </div>
-        <div class="stat-card">
-          <span>公职信息</span>
-          <strong id="civilCount">--</strong>
-        </div>
-        <div class="stat-card">
-          <span>国企信息</span>
-          <strong id="enterpriseCount">--</strong>
-        </div>
       </section>
 
-      <div class="content-grid">
-        <section class="notice-area" aria-labelledby="noticeTitle">
-          <div class="section-title">
-            <div>
-              <p class="section-kicker">官方公告</p>
-              <h2 id="noticeTitle">最新动态</h2>
-            </div>
-            <span id="resultCount"></span>
-          </div>
+      <section class="notice-area">
+        <div class="section-title">
+          <h2>最新动态</h2>
+          <span id="resultCount"></span>
+        </div>
+        <div class="info-tabs" role="tablist" aria-label="信息类型">
+          <button class="info-tab active" data-tab="civil" type="button">公职信息</button>
+          <button class="info-tab" data-tab="enterprise" type="button">国企信息</button>
+        </div>
+        <div class="notice-list" id="noticeList">
+          <article class="skeleton"></article>
+          <article class="skeleton"></article>
+          <article class="skeleton"></article>
+        </div>
+        <div class="pagination" id="pagination" aria-label="最新动态分页"></div>
+      </section>
 
-          <div class="info-tabs" role="tablist" aria-label="信息类型">
-            <button class="info-tab active" data-tab="civil" type="button" role="tab" aria-selected="true">
-              <span>公职信息</span>
-              <strong id="civilTabCount">--</strong>
-            </button>
-            <button class="info-tab" data-tab="enterprise" type="button" role="tab" aria-selected="false">
-              <span>国企信息</span>
-              <strong id="enterpriseTabCount">--</strong>
-            </button>
-          </div>
-
-          <div class="notice-list" id="noticeList">
-            <article class="skeleton"></article>
-            <article class="skeleton"></article>
-            <article class="skeleton"></article>
-          </div>
-
-          <div class="pagination" id="pagination" aria-label="最新动态分页"></div>
-        </section>
-
-        <aside class="source-panel" aria-labelledby="sourceTitle">
-          <div class="section-title compact">
-            <div>
-              <p class="section-kicker">数据入口</p>
-              <h2 id="sourceTitle">官方来源</h2>
-            </div>
-          </div>
-          <p class="source-note">页面仅聚合公开公告，报名条件、附件和岗位表以原文为准。</p>
-          <div id="sourceList" class="source-list"></div>
-        </aside>
-      </div>
+      <section class="source-panel">
+        <h2>官方来源</h2>
+        <div id="sourceList"></div>
+      </section>
     </main>
 
     <template id="noticeTemplate">
       <article class="notice-card">
-        <div class="notice-main">
-          <div class="notice-head">
-            <span class="pill"></span>
-            <time class="date"></time>
-          </div>
-          <h3></h3>
-          <div class="meta-row">
-            <span class="status"></span>
-            <span class="source"></span>
-          </div>
+        <div class="notice-head">
+          <span class="pill"></span>
+          <span class="date"></span>
         </div>
-        <div class="notice-side">
-          <span class="age"></span>
-          <a class="open-link" target="_blank" rel="noopener">
-            <span>查看原文</span>
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M7 17 17 7"></path>
-              <path d="M9 7h8v8"></path>
-            </svg>
-          </a>
+        <h3></h3>
+        <div class="meta-row">
+          <span class="status"></span>
+          <span class="source"></span>
         </div>
+        <a class="open-link" target="_blank" rel="noopener">查看原文</a>
       </article>
     </template>
 

@@ -10,15 +10,9 @@ const PAGE_SIZE = 10;
 
 const elements = {
   updatedText: document.querySelector("#updatedText"),
-  syncStatus: document.querySelector("#syncStatus"),
   refreshButton: document.querySelector("#refreshButton"),
   infoTabs: [...document.querySelectorAll(".info-tab")],
   resultCount: document.querySelector("#resultCount"),
-  totalCount: document.querySelector("#totalCount"),
-  civilCount: document.querySelector("#civilCount"),
-  enterpriseCount: document.querySelector("#enterpriseCount"),
-  civilTabCount: document.querySelector("#civilTabCount"),
-  enterpriseTabCount: document.querySelector("#enterpriseTabCount"),
   noticeList: document.querySelector("#noticeList"),
   pagination: document.querySelector("#pagination"),
   sourceList: document.querySelector("#sourceList"),
@@ -36,18 +30,15 @@ async function loadExams(force = false) {
     state.sources = payload.sources || [];
     state.page = 1;
     updateSummary(payload);
-    updateCounts();
     renderSources();
     renderNotices();
 
     if (payload.errors?.length) {
-      elements.updatedText.textContent = `部分来源异常`;
-      elements.syncStatus.textContent = `已显示 ${state.exams.length} 条`;
+      elements.updatedText.textContent = `最近一次更新时间为：部分来源暂不可用，已显示 ${state.exams.length} 条可用信息`;
     }
   } catch (error) {
     elements.noticeList.replaceChildren(createMessage("error-state", `拉取失败：${error.message}。请稍后刷新，或直接打开下方官方来源查看。`));
-    elements.updatedText.textContent = "更新失败";
-    elements.syncStatus.textContent = "稍后重试";
+    elements.updatedText.textContent = "最近一次更新时间为：连接失败";
   } finally {
     setLoading(false);
   }
@@ -55,24 +46,9 @@ async function loadExams(force = false) {
 
 function updateSummary(payload) {
   const updatedAt = payload.updatedAt ? new Date(payload.updatedAt) : null;
-  const nextRefreshAt = payload.nextRefreshAt ? new Date(payload.nextRefreshAt) : null;
   elements.updatedText.textContent = updatedAt
-    ? `更新 ${formatDateTime(updatedAt)}${payload.cached ? " 缓存" : ""}`
-    : "已加载";
-  elements.syncStatus.textContent = nextRefreshAt
-    ? `下次 ${formatTime(nextRefreshAt)}`
-    : "同步完成";
-}
-
-function updateCounts() {
-  const civilTotal = state.exams.filter((item) => item.category !== "国企").length;
-  const enterpriseTotal = state.exams.filter((item) => item.category === "国企").length;
-
-  elements.totalCount.textContent = state.exams.length;
-  elements.civilCount.textContent = civilTotal;
-  elements.enterpriseCount.textContent = enterpriseTotal;
-  elements.civilTabCount.textContent = civilTotal;
-  elements.enterpriseTabCount.textContent = enterpriseTotal;
+    ? `最近一次更新时间为：${formatDateTime(updatedAt)}${payload.cached ? " · 缓存" : ""}`
+    : "最近一次更新时间为：已加载";
 }
 
 function renderNotices() {
@@ -85,7 +61,7 @@ function renderNotices() {
   const start = (state.page - 1) * PAGE_SIZE;
   const pageItems = filtered.slice(start, start + PAGE_SIZE);
 
-  elements.resultCount.textContent = `当前筛选 ${filtered.length} 条`;
+  elements.resultCount.textContent = `${filtered.length} 条`;
   elements.noticeList.innerHTML = "";
   elements.pagination.innerHTML = "";
 
@@ -98,29 +74,17 @@ function renderNotices() {
   }
 
   const fragment = document.createDocumentFragment();
-  pageItems.forEach((item, index) => {
+  pageItems.forEach((item) => {
     const node = elements.template.content.cloneNode(true);
-    const card = node.querySelector(".notice-card");
     const pill = node.querySelector(".pill");
-    const date = node.querySelector(".date");
-
-    card.style.animationDelay = `${Math.min(index * 35, 180)}ms`;
     pill.textContent = item.category;
     pill.dataset.kind = item.category;
-    date.textContent = item.date || "日期待确认";
-    if (item.date) date.dateTime = item.date;
+    node.querySelector(".date").textContent = item.date || "日期待确认";
     node.querySelector("h3").textContent = item.title;
     node.querySelector(".status").textContent = item.highlight || item.status;
     node.querySelector(".source").textContent = item.source;
-    node.querySelector(".age").textContent = getAgeLabel(item.date);
     const link = node.querySelector(".open-link");
     link.href = item.url;
-    link.setAttribute("aria-label", `查看原文：${item.title}`);
-    link.addEventListener("pointerdown", () => {
-      link.classList.remove("is-tapping");
-      window.requestAnimationFrame(() => link.classList.add("is-tapping"));
-    });
-    link.addEventListener("animationend", () => link.classList.remove("is-tapping"));
     fragment.appendChild(node);
   });
 
@@ -147,12 +111,9 @@ function createPageButton(label, page, disabled) {
   button.textContent = label;
   button.disabled = disabled;
   button.addEventListener("click", () => {
-    button.classList.add("is-switching");
     state.page = page;
-    window.setTimeout(() => {
-      renderNotices();
-      document.querySelector(".notice-area").scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 140);
+    renderNotices();
+    document.querySelector(".notice-area").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   return button;
 }
@@ -160,11 +121,6 @@ function createPageButton(label, page, disabled) {
 function renderSources() {
   elements.sourceList.innerHTML = "";
   const fragment = document.createDocumentFragment();
-
-  if (!state.sources.length) {
-    elements.sourceList.replaceChildren(createMessage("empty-state", "官方来源正在加载。"));
-    return;
-  }
 
   state.sources.forEach((source) => {
     const row = document.createElement("div");
@@ -179,8 +135,7 @@ function renderSources() {
     link.href = source.url;
     link.target = "_blank";
     link.rel = "noopener";
-    link.textContent = "访问";
-    link.setAttribute("aria-label", `访问${source.name}`);
+    link.textContent = "打开";
 
     text.append(name, type);
     row.append(text, link);
@@ -194,7 +149,6 @@ function setLoading(value) {
   state.loading = value;
   elements.refreshButton.disabled = value;
   elements.refreshButton.classList.toggle("loading", value);
-  if (value) elements.syncStatus.textContent = "同步中";
 }
 
 function formatDateTime(date) {
@@ -204,24 +158,6 @@ function formatDateTime(date) {
     hour: "2-digit",
     minute: "2-digit"
   }).format(date);
-}
-
-function formatTime(date) {
-  return new Intl.DateTimeFormat("zh-CN", {
-    hour: "2-digit",
-    minute: "2-digit"
-  }).format(date);
-}
-
-function getAgeLabel(value) {
-  if (!value) return "时间待确认";
-  const time = Date.parse(value);
-  if (Number.isNaN(time)) return "时间待确认";
-
-  const days = Math.max(0, Math.floor((Date.now() - time) / 86400000));
-  if (days === 0) return "今日发布";
-  if (days <= 30) return `${days} 天前`;
-  return "30 天以上";
 }
 
 function createMessage(className, message) {
@@ -236,9 +172,7 @@ elements.refreshButton.addEventListener("click", () => loadExams(true));
 elements.infoTabs.forEach((button) => {
   button.addEventListener("click", () => {
     elements.infoTabs.forEach((item) => item.classList.remove("active"));
-    elements.infoTabs.forEach((item) => item.setAttribute("aria-selected", "false"));
     button.classList.add("active");
-    button.setAttribute("aria-selected", "true");
     state.activeTab = button.dataset.tab;
     state.page = 1;
     renderNotices();
